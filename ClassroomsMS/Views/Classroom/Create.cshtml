@@ -1,0 +1,32 @@
+@model CreateClassroomViewModel
+
+<div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">&larr; Back</a>
+</div>
+
+<h3 class="mb-4">New Classroom</h3>
+
+<div class="card shadow-sm" style="max-width: 500px;">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+            <div class="mb-3">
+                <label asp-for="Subject" class="form-label">Subject</label>
+                <input asp-for="Subject" class="form-control" placeholder="e.g. English, Math" />
+                <span asp-validation-for="Subject" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="ClassId" class="form-label">Class</label>
+                <select asp-for="ClassId" class="form-select">
+                    <option value="">— Select class —</option>
+                    @foreach (var cls in Model.Classes)
+                    {
+                        <option value="@cls.Id">Grade @cls.Grade, Class @cls.ClassNumber</option>
+                    }
+                </select>
+                <span asp-validation-for="ClassId" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Create Classroom</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+@model SubmissionsViewModel
+
+<p class="text-muted small mb-3">
+    @Model.Submissions.Count of @Model.TotalStudents students submitted
+</p>
+
+@if (!Model.Submissions.Any())
+{
+    <p class="text-center text-muted">No submissions yet.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var submission in Model.Submissions)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@submission.StudentUser.User.FirstName @submission.StudentUser.User.LastName</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">@submission.UploadedAt.ToLocalTime().ToString("dd MMM HH:mm")</span>
+                    <a asp-controller="TaskFile" asp-action="Download" asp-route-id="@submission.Id"
+                       class="btn btn-sm btn-outline-primary">&#8659; Download</a>
+                </div>
+            </li>
+        }
+    </ul>
+}

@@ -1,0 +1,138 @@
+@model ClassroomTasksViewModel
+@{
+    var c = Model.Classroom;
+    var classroomTitle = $"{c.Class.Grade}-{c.Class.ClassNumber} {c.Subject}";
+}
+
+<div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">&larr; Back</a>
+</div>
+
+<h3 class="mb-1">@classroomTitle</h3>
+<p class="text-muted small mb-3">@c.Teacher.User.FirstName @c.Teacher.User.LastName</p>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Classroom" asp-action="Notices" asp-route-id="@c.Id">Notices</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" asp-controller="Classroom" asp-action="Tasks" asp-route-id="@c.Id">Tasks</a>
+    </li>
+    @if (Model.IsTeacher)
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Classroom" asp-action="Students" asp-route-id="@c.Id">Students</a>
+        </li>
+    }
+</ul>
+
+@if (Model.IsTeacher)
+{
+    <div class="mb-4">
+        <a asp-controller="Assignment" asp-action="Create" asp-route-classroomId="@c.Id" class="btn btn-primary">
+            + Add Task
+        </a>
+    </div>
+}
+
+@if (!c.Assignments.Any())
+{
+    <div class="alert alert-light border">No tasks yet.</div>
+}
+
+@foreach (var assignment in c.Assignments.OrderByDescending(a => a.CreatedAt))
+{
+    var submittedCount = assignment.TaskFiles.Count;
+    var studentHasSubmitted = Model.StudentUserId.HasValue &&
+        assignment.TaskFiles.Any(tf => tf.StudentUserId == Model.StudentUserId.Value);
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <p class="card-text" style="white-space: pre-wrap;">@assignment.Text</p>
+
+            @if (assignment.Attachments.Any())
+            {
+                <div class="mb-2">
+                    <strong class="small">Attachments:</strong>
+                    <ul class="list-unstyled mb-0 mt-1">
+                        @foreach (var att in assignment.Attachments)
+                        {
+                            <li>
+                                <a asp-controller="Assignment" asp-action="File" asp-route-id="@att.Id"
+                                   class="text-decoration-none small">
+                                    &#128206; @att.FileName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <small class="text-muted">Posted @assignment.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</small>
+
+            @if (Model.IsTeacher)
+            {
+                <div class="mt-3 d-flex align-items-center gap-3">
+                    <button type="button" class="btn btn-sm btn-outline-info submissions-btn"
+                            data-assignment-id="@assignment.Id">
+                        &#128203; @submittedCount / @Model.TotalStudents submitted
+                    </button>
+                    <a asp-controller="Assignment" asp-action="Edit" asp-route-id="@assignment.Id"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <form asp-controller="Assignment" asp-action="Delete" asp-route-id="@assignment.Id" method="post"
+                          onsubmit="return confirm('Delete this task?')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="mt-3">
+                    @if (studentHasSubmitted)
+                    {
+                        <span class="badge bg-success me-2">&#10003; Submitted</span>
+                    }
+                    <form asp-controller="TaskFile" asp-action="Upload" method="post" enctype="multipart/form-data"
+                          class="d-inline-flex gap-2 align-items-center">
+                        <input type="hidden" name="assignmentId" value="@assignment.Id" />
+                        <input type="file" name="file" class="form-control form-control-sm" style="width:auto" />
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            @(studentHasSubmitted ? "Resubmit" : "Submit")
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Submissions Modal -->
+<div class="modal fade" id="submissionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Submissions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="submissionsContent">
+                <div class="text-center py-3">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.querySelectorAll('.submissions-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const assignmentId = this.dataset.assignmentId;
+            const modal = new bootstrap.Modal(document.getElementById('submissionsModal'));
+            document.getElementById('submissionsContent').innerHTML = '<div class="text-center py-3">Loading...</div>';
+            modal.show();
+            fetch('/Assignment/Submissions/' + assignmentId)
+                .then(r => r.text())
+                .then(html => { document.getElementById('submissionsContent').innerHTML = html; });
+        });
+    });
+</script>
+}

@@ -1,0 +1,36 @@
+/* Auth landing */
+.min-vh-100 {
+    min-height: 100vh;
+}
+
+/* Notice image thumbnails */
+.notice-thumb {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+}
+
+/* Classroom tabs on dashboard — make them look like navigation, not toggle tabs */
+.classroom-tab-link {
+    color: #495057;
+}
+
+.classroom-tab-link:hover {
+    color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+/* Card hover effect */
+.classroom-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: all 0.15s ease;
+}
+
+/* Keep nav-link text readable inside tabs */
+.nav-tabs .nav-link.active {
+    font-weight: 600;
+}

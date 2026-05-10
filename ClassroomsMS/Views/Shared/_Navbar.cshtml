@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" asp-controller="Account" asp-action="Index">ClassroomsMS</a>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <span class="text-white">@Context.Session.GetString("UserFullName")</span>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>

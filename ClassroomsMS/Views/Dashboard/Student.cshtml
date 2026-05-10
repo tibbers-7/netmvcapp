@@ -1,0 +1,61 @@
+@model StudentDashboardViewModel
+
+@if (TempData["JoinError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["JoinError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">My Classes</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinModal">
+        + Add Classroom
+    </button>
+</div>
+
+@if (!Model.Classrooms.Any())
+{
+    <div class="alert alert-info">You haven't joined any classrooms yet. Use the button above to join with a code.</div>
+}
+else
+{
+    <ul class="nav nav-tabs" id="classroomTabs" role="tablist">
+        @foreach (var classroom in Model.Classrooms)
+        {
+            <li class="nav-item" role="presentation">
+                <a class="nav-link classroom-tab-link"
+                   asp-controller="Classroom" asp-action="Notices" asp-route-id="@classroom.Id">
+                    <span class="d-block fw-semibold">@classroom.Subject</span>
+                    <span class="d-block text-muted small">@classroom.Teacher.User.FirstName @classroom.Teacher.User.LastName</span>
+                </a>
+            </li>
+        }
+    </ul>
+    <div class="border border-top-0 rounded-bottom p-4 bg-white text-muted">
+        Select a classroom tab to open it.
+    </div>
+}
+
+<!-- Join Classroom Modal -->
+<div class="modal fade" id="joinModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Join a Classroom</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Classroom" asp-action="Join" method="post">
+                <div class="modal-body">
+                    <label class="form-label">Classroom Code</label>
+                    <input type="text" name="code" class="form-control" placeholder="e.g. AB12CD34" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Join</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+@model NoticeFormViewModel
+
+<div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">&larr; Back</a>
+</div>
+
+<h3 class="mb-1">Edit Notice</h3>
+<p class="text-muted small mb-4">@Model.ClassroomName</p>
+
+<div class="card shadow-sm" style="max-width: 600px;">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ClassroomId" />
+            <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+            <div class="mb-3">
+                <label asp-for="Text" class="form-label">Message</label>
+                <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Text" class="text-danger small"></span>
+            </div>
+
+            @if (Model.ExistingImages.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Current Images</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var img in Model.ExistingImages)
+                        {
+                            <div class="position-relative">
+                                <img src="@Url.Action("Image", "Notice", new { id = img.Id })"
+                                     alt="@img.FileName" class="notice-thumb" />
+                                <form asp-action="DeleteImage" method="post" class="d-inline">
+                                    <input type="hidden" name="imageId" value="@img.Id" />
+                                    <input type="hidden" name="noticeId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                                            style="padding: 1px 5px; font-size: 10px;"
+                                            onclick="return confirm('Remove this image?')">&times;</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="mb-4">
+                <label class="form-label">Add More Images (optional)</label>
+                <input type="file" name="images" class="form-control" accept="image/*" multiple />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>

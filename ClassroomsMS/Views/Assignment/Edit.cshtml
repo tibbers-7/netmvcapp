@@ -1,0 +1,51 @@
+@model AssignmentFormViewModel
+
+<div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">&larr; Back</a>
+</div>
+
+<h3 class="mb-1">Edit Task</h3>
+<p class="text-muted small mb-4">@Model.ClassroomName</p>
+
+<div class="card shadow-sm" style="max-width: 600px;">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ClassroomId" />
+            <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+            <div class="mb-3">
+                <label asp-for="Text" class="form-label">Description</label>
+                <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Text" class="text-danger small"></span>
+            </div>
+
+            @if (Model.ExistingAttachments.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Current Attachments</label>
+                    <ul class="list-group mb-2">
+                        @foreach (var att in Model.ExistingAttachments)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a asp-controller="Assignment" asp-action="File" asp-route-id="@att.Id"
+                                   class="text-decoration-none small">&#128206; @att.FileName</a>
+                                <form asp-action="DeleteAttachment" method="post" class="d-inline">
+                                    <input type="hidden" name="attachmentId" value="@att.Id" />
+                                    <input type="hidden" name="assignmentId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Remove this attachment?')">&times;</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="mb-4">
+                <label class="form-label">Add More Attachments (optional)</label>
+                <input type="file" name="files" class="form-control" multiple />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>

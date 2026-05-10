@@ -1,0 +1,29 @@
+@model LoginViewModel
+@{
+    Layout = "_AuthLayout";
+}
+
+<div class="min-vh-100 d-flex flex-column justify-content-center align-items-center">
+    <h1 class="display-4 fw-bold text-primary mb-4">ClassroomsMS</h1>
+    <div class="card shadow" style="width: 400px;">
+        <div class="card-body p-4">
+            <h5 class="card-title mb-4">Login</h5>
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" type="email" placeholder="you@example.com" />
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <hr />
+            <div class="text-center small">
+                Don't have an account? <a asp-action="Signup">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
