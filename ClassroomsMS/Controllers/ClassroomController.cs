@@ -118,7 +118,7 @@ public class ClassroomController : BaseController
 
         var classroom = await _db.Classrooms
             .Include(c => c.Class)
-            .Include(c => c.Teacher)
+            .Include(c => c.Teacher).ThenInclude(t => t.User)
             .Include(c => c.ClassroomStudents)
                 .ThenInclude(cs => cs.StudentUser)
                     .ThenInclude(s => s.User)

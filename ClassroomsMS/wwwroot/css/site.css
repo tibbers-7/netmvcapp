@@ -34,3 +34,8 @@
 .nav-tabs .nav-link.active {
     font-weight: 600;
 }
+
+/* Hide validation summary when there are no errors */
+.validation-summary-valid {
+    display: none !important;
+}
