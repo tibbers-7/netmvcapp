@@ -1,28 +1,88 @@
 @model TeacherDashboardViewModel
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">My Classrooms</h2>
-    <a asp-controller="Classroom" asp-action="Create" class="btn btn-primary">+ New Classroom</a>
-</div>
+<!-- Page-level tabs: Classrooms | Students -->
+<ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="classrooms-tab" data-bs-toggle="tab" data-bs-target="#classrooms"
+                type="button" role="tab">
+            My Classrooms
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#students"
+                type="button" role="tab">
+            All Students
+        </button>
+    </li>
+</ul>
 
-@if (!Model.Classrooms.Any())
-{
-    <div class="alert alert-info">No classrooms yet. Create your first classroom using the button above.</div>
-}
-else
-{
-    <ul class="nav nav-tabs" id="classroomTabs" role="tablist">
-        @foreach (var classroom in Model.Classrooms)
+<div class="tab-content" id="dashboardTabsContent">
+
+    <!-- Classrooms tab -->
+    <div class="tab-pane fade show active" id="classrooms" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">My Classrooms</h4>
+            <a asp-controller="Classroom" asp-action="Create" class="btn btn-primary">+ New Classroom</a>
+        </div>
+
+        @if (!Model.Classrooms.Any())
         {
-            <li class="nav-item" role="presentation">
-                <a class="nav-link classroom-tab-link"
-                   asp-controller="Classroom" asp-action="Notices" asp-route-id="@classroom.Id">
-                    @classroom.Class.Grade-@classroom.Class.ClassNumber @classroom.Subject
-                </a>
-            </li>
+            <div class="alert alert-info">No classrooms yet. Create your first classroom using the button above.</div>
         }
-    </ul>
-    <div class="border border-top-0 rounded-bottom p-4 bg-white text-muted">
-        Select a classroom tab to open it.
+        else
+        {
+            <div class="d-flex flex-wrap gap-3">
+                @foreach (var classroom in Model.Classrooms)
+                {
+                    <a asp-controller="Classroom" asp-action="Notices" asp-route-id="@classroom.Id"
+                       class="dashboard-classroom-tab text-decoration-none">
+                        <span class="fw-semibold fs-5">@classroom.Class.Grade-@classroom.Class.ClassNumber</span>
+                        <span class="mt-1">@classroom.Subject</span>
+                    </a>
+                }
+            </div>
+        }
     </div>
-}
+
+    <!-- Students tab -->
+    <div class="tab-pane fade" id="students" role="tabpanel">
+        <h4 class="mb-4">All Students</h4>
+
+        @if (!Model.AllStudents.Any())
+        {
+            <div class="alert alert-info">No students have signed up yet.</div>
+        }
+        else
+        {
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Class</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model.AllStudents.OrderBy(s => s.User.LastName))
+                    {
+                        <tr>
+                            <td>@student.User.FirstName @student.User.LastName</td>
+                            <td class="text-muted small">@student.User.Email</td>
+                            <td>
+                                @if (student.Class != null)
+                                {
+                                    @($"{student.Class.Grade}-{student.Class.ClassNumber}")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>

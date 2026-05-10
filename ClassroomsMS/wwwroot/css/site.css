@@ -13,21 +13,28 @@
     cursor: pointer;
 }
 
-/* Classroom tabs on dashboard — make them look like navigation, not toggle tabs */
-.classroom-tab-link {
-    color: #495057;
+/* Dashboard classroom tiles */
+.dashboard-classroom-tab {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    min-height: 100px;
+    padding: 16px 12px;
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    color: #212529;
+    text-align: center;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.classroom-tab-link:hover {
+.dashboard-classroom-tab:hover {
+    border-color: #0d6efd;
     color: #0d6efd;
-    background-color: #f8f9fa;
-}
-
-/* Card hover effect */
-.classroom-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-    transition: all 0.15s ease;
+    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.18);
+    transform: translateY(-3px);
 }
 
 /* Keep nav-link text readable inside tabs */

@@ -23,9 +23,15 @@ public class DashboardController : BaseController
 
         if (teacherUser == null) return RedirectToAction("Index", "Account");
 
+        var allStudents = await _db.StudentUsers
+            .Include(s => s.User)
+            .Include(s => s.Class)
+            .ToListAsync();
+
         return View(new TeacherDashboardViewModel
         {
-            Classrooms = teacherUser.Classrooms.ToList()
+            Classrooms = teacherUser.Classrooms.ToList(),
+            AllStudents = allStudents
         });
     }
 

@@ -21,20 +21,15 @@
 }
 else
 {
-    <ul class="nav nav-tabs" id="classroomTabs" role="tablist">
+    <div class="d-flex flex-wrap gap-3">
         @foreach (var classroom in Model.Classrooms)
         {
-            <li class="nav-item" role="presentation">
-                <a class="nav-link classroom-tab-link"
-                   asp-controller="Classroom" asp-action="Notices" asp-route-id="@classroom.Id">
-                    <span class="d-block fw-semibold">@classroom.Subject</span>
-                    <span class="d-block text-muted small">@classroom.Teacher.User.FirstName @classroom.Teacher.User.LastName</span>
-                </a>
-            </li>
+            <a asp-controller="Classroom" asp-action="Notices" asp-route-id="@classroom.Id"
+               class="dashboard-classroom-tab text-decoration-none">
+                <span class="fw-semibold fs-5">@classroom.Subject</span>
+                <span class="mt-1 text-muted small">@classroom.Teacher.User.FirstName @classroom.Teacher.User.LastName</span>
+            </a>
         }
-    </ul>
-    <div class="border border-top-0 rounded-bottom p-4 bg-white text-muted">
-        Select a classroom tab to open it.
     </div>
 }
 
